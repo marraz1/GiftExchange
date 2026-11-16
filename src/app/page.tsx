@@ -32,7 +32,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             <Link
               key={o.href}
               href={o.href}
-              className={`flex flex-col items-center gap-2 rounded-2xl border bg-panel/60 px-2 py-4 text-sm font-semibold transition ${o.cls}`}
+              className={`flex flex-col items-center gap-2 rounded-2xl border bg-panel/90 px-2 py-4 text-sm font-semibold transition ${o.cls}`}
             >
               <span className="text-3xl" aria-hidden>
                 {o.emoji}
@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
         <h2 className="mb-6 text-xl font-bold">Kaip tai veikia</h2>
         <ol className="grid gap-4 sm:grid-cols-3">
           {steps.map(([title, text], i) => (
-            <li key={title} className="relative rounded-3xl border border-line bg-panel/50 p-5">
+            <li key={title} className="relative rounded-3xl border border-line bg-panel/90 p-5">
               <span className="font-display text-4xl font-bold text-line">{i + 1}</span>
               <h3 className="mt-3 font-display text-sm font-bold">{title}</h3>
               <p className="mt-2 text-sm text-muted">{text}</p>
@@ -56,7 +56,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
         </ol>
       </section>
 
-      <section className="flex gap-4 rounded-3xl border border-rose/30 bg-rose/5 p-5 sm:p-7">
+      <section className="flex gap-4 rounded-3xl border border-rose/30 bg-panel/90 p-5 sm:p-7">
         <span className="text-3xl" aria-hidden>
           🎂
         </span>
