@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { createEvent, type CreateState } from "../actions/create";
 import { SubmitButton } from "@/components/SubmitButton";
 
@@ -19,7 +19,7 @@ const DEFAULT_TITLES: Record<T, string> = {
 };
 
 export function NewEventForm({ initialType }: { initialType: T }) {
-  const [state, action] = useActionState<CreateState, FormData>(createEvent, null);
+  const [state, action, busy] = useActionState<CreateState, FormData>(createEvent, null);
   const v = state?.values ?? {};
   const [type, setType] = useState<T>((v.type as T) || initialType);
   const [celebrantIsHost, setCelebrantIsHost] = useState(v.celebrantIsHost === "on");
@@ -27,7 +27,14 @@ export function NewEventForm({ initialType }: { initialType: T }) {
   const birthday = type === "birthday";
 
   return (
-    <form action={action} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        // Submit manually so React does not reset the fields when validation fails.
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+        startTransition(() => action(fd));
+      }}
+      className="space-y-6">
       {state?.errors.length ? (
         <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           <p className="font-semibold">Pataisykite:</p>
@@ -212,7 +219,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
         />
       </section>
 
-      <SubmitButton className={`btn w-full py-3 text-base ${t.btn}`} pendingText="Kuriama…">
+      <SubmitButton busy={busy} className={`btn w-full py-3 text-base ${t.btn}`} pendingText="Kuriama…">
         {t.emoji} Sukurti progą
       </SubmitButton>
     </form>

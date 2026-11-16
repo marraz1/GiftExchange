@@ -22,12 +22,14 @@ export type ParticipantRow = Participant & {
 export async function loadAdminView(token: string) {
   const event = await getEventByAdminToken(token);
   if (!event) return null;
+  // Explicitly qualified: drizzle renders a bare "id" here, which the subqueries would bind to their own table.
+  const pid = sql.raw(`"participants"."id"`);
   const rows = await db()
     .select({
       p: participants,
-      wishCount: sql<number>`(select count(*)::int from ${wishes} w where w.participant_id = ${participants.id})`,
-      lastEmailStatus: sql<string | null>`(select l.status from ${emailLog} l where l.participant_id = ${participants.id} order by l.created_at desc limit 1)`,
-      lastEmailError: sql<string | null>`(select l.error from ${emailLog} l where l.participant_id = ${participants.id} order by l.created_at desc limit 1)`,
+      wishCount: sql<number>`(select count(*)::int from ${wishes} w where w.participant_id = ${pid})`,
+      lastEmailStatus: sql<string | null>`(select l.status from ${emailLog} l where l.participant_id = ${pid} order by l.created_at desc limit 1)`,
+      lastEmailError: sql<string | null>`(select l.error from ${emailLog} l where l.participant_id = ${pid} order by l.created_at desc limit 1)`,
     })
     .from(participants)
     .where(eq(participants.eventId, event.id))

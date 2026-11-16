@@ -20,8 +20,13 @@ async function requireParticipant(fd: FormData) {
   return { token, ...found };
 }
 
-export async function saveWishes(fd: FormData) {
+export type WishesState = { error: string; values: Record<string, string> } | null;
+
+export async function saveWishes(_prev: WishesState, fd: FormData): Promise<WishesState> {
   const { token, event, participant } = await requireParticipant(fd);
+  const values: Record<string, string> = {};
+  for (const [k, v] of fd.entries()) if (typeof v === "string") values[k] = v;
+  const invalid = (error: string): WishesState => ({ error, values });
   const complete = str(fd, "intent") === "complete";
 
   if (event.type === "birthday" && participant.role !== "celebrant")
@@ -39,14 +44,14 @@ export async function saveWishes(fd: FormData) {
       url: str(fd, `url_${i}`),
       note: str(fd, `note_${i}`),
     });
-    if (!w.success) back(token, `${i} noras: ${w.error.issues[0].message}`, "err");
+    if (!w.success) return invalid(`${i} noras: ${w.error.issues[0].message}`);
     if (!w.data.title) {
-      if (w.data.url || w.data.note) back(token, `${i} noras: įrašykite pavadinimą`, "err");
+      if (w.data.url || w.data.note) return invalid(`${i} noras: įrašykite pavadinimą`);
       continue;
     }
     items.push(w.data);
   }
-  if (complete && items.length === 0) back(token, "Įrašykite bent vieną norą.", "err");
+  if (complete && items.length === 0) return invalid("Įrašykite bent vieną norą.");
 
   await db().transaction(async (tx) => {
     await tx.delete(wishes).where(eq(wishes.participantId, participant.id));

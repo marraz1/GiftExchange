@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { claimWish, saveWishes, unclaimWish } from "@/app/actions/participant";
+import { claimWish, unclaimWish } from "@/app/actions/participant";
+import { WishesForm } from "./WishesForm";
 import { Flash } from "@/components/Flash";
 import { SubmitButton } from "@/components/SubmitButton";
 import type { Wish } from "@/lib/db";
@@ -173,64 +174,15 @@ export default async function ParticipantPage({ params, searchParams }: Props) {
               <p className="text-sm text-gray-600">Norų nenurodėte.</p>
             )
           ) : (
-            <form action={saveWishes} className="space-y-5">
-              <input type="hidden" name="token" value={token} />
-              <p className="text-sm text-gray-600">
-                Įrašykite iki {max} norų ar idėjų – daiktą, patirtį ar tiesiog kryptį (pvz. „gera knyga apie keliones“).
-                {birthday ? " Svečiai matys šį sąrašą ir pasirinks, ką dovanoti." : " Juos matys tik tas, kuris jums dovanos."}
-              </p>
-              {Array.from({ length: max }, (_, i) => {
-                const w = own[i];
-                const n = i + 1;
-                return (
-                  <fieldset key={n} className="space-y-2 rounded-xl border border-gray-200 p-3">
-                    <legend className="px-1 text-sm font-semibold text-gray-700">{n} noras</legend>
-                    <input
-                      name={`title_${n}`}
-                      className="input"
-                      placeholder="Ką norėtumėte gauti?"
-                      maxLength={200}
-                      defaultValue={w?.title ?? ""}
-                      aria-label={`${n} noras`}
-                    />
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      <input
-                        name={`url_${n}`}
-                        type="url"
-                        className="input text-sm"
-                        placeholder="Nuoroda (nebūtina)"
-                        maxLength={1000}
-                        defaultValue={w?.url ?? ""}
-                        aria-label={`${n} noro nuoroda`}
-                      />
-                      <input
-                        name={`note_${n}`}
-                        className="input text-sm"
-                        placeholder="Dydis, spalva… (nebūtina)"
-                        maxLength={300}
-                        defaultValue={w?.note ?? ""}
-                        aria-label={`${n} noro komentaras`}
-                      />
-                    </div>
-                  </fieldset>
-                );
-              })}
-              <div className="flex flex-wrap gap-2">
-                <SubmitButton name="intent" value="complete" className={`btn ${theme.btn} px-6 py-3 text-base`} pendingText="Saugoma…">
-                  ✅ {participant.completedAt ? "Išsaugoti" : "Baigiau"}
-                </SubmitButton>
-                {!participant.completedAt ? (
-                  <SubmitButton name="intent" value="save" className="btn-secondary" pendingText="Saugoma…">
-                    Išsaugoti juodraštį
-                  </SubmitButton>
-                ) : null}
-              </div>
-              {!birthday ? (
-                <p className="text-xs text-gray-500">
-                  Norus galite keisti, kol organizatorius neištraukė burtų. Burtų rezultatą gausite el. paštu.
-                </p>
-              ) : null}
-            </form>
+            <WishesForm
+              key={`${sp.m ?? ""}-${participant.completedAt?.getTime() ?? 0}`}
+              token={token}
+              max={max}
+              wishes={own}
+              completed={Boolean(participant.completedAt)}
+              birthday={birthday}
+              btnClass={theme.btn}
+            />
           )}
         </section>
       )}
