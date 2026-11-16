@@ -18,7 +18,7 @@ export function SubmitButton({ children, pendingText, confirmText, className, on
     <button
       type="submit"
       disabled={pending || disabled}
-      className={className ?? "btn bg-gray-900 hover:bg-gray-800"}
+      className={className ?? "btn bg-ink text-void hover:bg-white"}
       onClick={(e) => {
         if (confirmText && !window.confirm(confirmText)) e.preventDefault();
         onClick?.(e);

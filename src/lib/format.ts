@@ -2,36 +2,40 @@ import type { Event } from "./db/schema";
 
 export type EventType = Event["type"];
 
+/** `accent` is for emails (light background); the class names are for the dark site. */
 export const THEMES: Record<
   EventType,
-  { label: string; emoji: string; accent: string; soft: string; text: string; btn: string; ring: string }
+  { label: string; emoji: string; accent: string; soft: string; text: string; btn: string; ring: string; stroke: string }
 > = {
   christmas: {
     label: "Kalėdos",
     emoji: "🎄",
-    accent: "#b91c1c",
-    soft: "bg-red-50",
-    text: "text-red-700",
-    btn: "bg-red-700 hover:bg-red-800",
-    ring: "border-red-200",
+    accent: "#0e7490",
+    soft: "bg-ice/10",
+    text: "text-ice",
+    btn: "bg-ice text-void hover:bg-cyan-200 shadow-[0_0_24px_-6px_var(--color-ice)]",
+    ring: "border-ice/40",
+    stroke: "var(--color-ice)",
   },
   birthday: {
     label: "Gimtadienis",
     emoji: "🎂",
-    accent: "#7c3aed",
-    soft: "bg-violet-50",
-    text: "text-violet-700",
-    btn: "bg-violet-700 hover:bg-violet-800",
-    ring: "border-violet-200",
+    accent: "#be185d",
+    soft: "bg-rose/10",
+    text: "text-rose",
+    btn: "bg-rose text-void hover:bg-pink-300 shadow-[0_0_24px_-6px_var(--color-rose)]",
+    ring: "border-rose/40",
+    stroke: "var(--color-rose)",
   },
   custom: {
     label: "Kita proga",
     emoji: "🎁",
-    accent: "#0f766e",
-    soft: "bg-teal-50",
-    text: "text-teal-700",
-    btn: "bg-teal-700 hover:bg-teal-800",
-    ring: "border-teal-200",
+    accent: "#047857",
+    soft: "bg-mint/10",
+    text: "text-mint",
+    btn: "bg-mint text-void hover:bg-emerald-200 shadow-[0_0_24px_-6px_var(--color-mint)]",
+    ring: "border-mint/40",
+    stroke: "var(--color-mint)",
   },
 };
 

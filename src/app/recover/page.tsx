@@ -10,7 +10,7 @@ export default async function RecoverPage({ searchParams }: { searchParams: Prom
   return (
     <div className="mx-auto max-w-md space-y-4 pt-6">
       <h1 className="text-2xl font-bold">Pamiršote valdymo nuorodą?</h1>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted">
         Įveskite el. paštą, kurį nurodėte kurdami progą. Atsiųsime visų jūsų aktyvių progų valdymo nuorodas.
       </p>
       <Flash m={m} t={t} />

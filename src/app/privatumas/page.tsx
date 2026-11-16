@@ -4,8 +4,8 @@ export const metadata: Metadata = { title: "Privatumas" };
 
 export default function PrivacyPage() {
   return (
-    <article className="card space-y-3 text-sm leading-relaxed text-gray-700">
-      <h1 className="text-2xl font-bold text-gray-900">Privatumo politika</h1>
+    <article className="card space-y-3 text-sm leading-relaxed text-ink/85">
+      <h1 className="text-2xl font-bold text-ink">Privatumo politika</h1>
       <p>
         Saugome tik tai, ko reikia dovanų keitimuisi: organizatoriaus ir dalyvių vardus, el. pašto adresus, dalyvių
         įrašytus norus ir burtų rezultatus.

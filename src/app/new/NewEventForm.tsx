@@ -7,9 +7,9 @@ import { SubmitButton } from "@/components/SubmitButton";
 type T = "christmas" | "birthday" | "custom";
 
 const TYPES: Array<{ id: T; label: string; emoji: string; btn: string; ring: string }> = [
-  { id: "christmas", label: "Kalėdos", emoji: "🎄", btn: "bg-red-700 hover:bg-red-800", ring: "ring-red-600 bg-red-50" },
-  { id: "birthday", label: "Gimtadienis", emoji: "🎂", btn: "bg-violet-700 hover:bg-violet-800", ring: "ring-violet-600 bg-violet-50" },
-  { id: "custom", label: "Kita proga", emoji: "🎁", btn: "bg-teal-700 hover:bg-teal-800", ring: "ring-teal-600 bg-teal-50" },
+  { id: "christmas", label: "Kalėdos", emoji: "🎄", btn: "bg-ice text-void hover:bg-cyan-200 shadow-[0_0_24px_-6px_var(--color-ice)]", ring: "ring-ice border-ice/60 bg-ice/10 text-ice" },
+  { id: "birthday", label: "Gimtadienis", emoji: "🎂", btn: "bg-rose text-void hover:bg-pink-300 shadow-[0_0_24px_-6px_var(--color-rose)]", ring: "ring-rose border-rose/60 bg-rose/10 text-rose" },
+  { id: "custom", label: "Kita proga", emoji: "🎁", btn: "bg-mint text-void hover:bg-emerald-200 shadow-[0_0_24px_-6px_var(--color-mint)]", ring: "ring-mint border-mint/60 bg-mint/10 text-mint" },
 ];
 
 const DEFAULT_TITLES: Record<T, string> = {
@@ -36,7 +36,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
       }}
       className="space-y-6">
       {state?.errors.length ? (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div role="alert" className="rounded-2xl border border-rose/40 bg-rose/10 px-4 py-3 text-sm text-pink-100">
           <p className="font-semibold">Pataisykite:</p>
           <ul className="mt-1 list-disc pl-5">
             {state.errors.map((e) => (
@@ -53,8 +53,8 @@ export function NewEventForm({ initialType }: { initialType: T }) {
           {TYPES.map((x) => (
             <label
               key={x.id}
-              className={`cursor-pointer rounded-xl border border-gray-200 p-3 text-center text-sm font-medium transition ${
-                type === x.id ? `ring-2 ${x.ring}` : "hover:bg-gray-50"
+              className={`cursor-pointer rounded-xl border border-line p-3 text-center text-sm font-medium transition ${
+                type === x.id ? `ring-2 ${x.ring}` : "hover:bg-void/60/5"
               }`}
             >
               <input
@@ -70,7 +70,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
             </label>
           ))}
         </div>
-        <p className="mt-3 text-sm text-gray-600">
+        <p className="mt-3 text-sm text-muted">
           {birthday
             ? "Jubiliatas surašo norus, svečiai rezervuoja, ką dovanos. Burtų nėra."
             : "Kiekvienas surašo iki 3 norų, tada traukiami burtai – kiekvienas dovanoja vienam žmogui."}
@@ -95,7 +95,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="budgetAmount">
-              {birthday ? "Suma vienam svečiui" : "Dovanos suma"} <span className="text-gray-400">(nebūtina)</span>
+              {birthday ? "Suma vienam svečiui" : "Dovanos suma"} <span className="text-muted/70">(nebūtina)</span>
             </label>
             <div className="flex gap-2">
               <input
@@ -122,14 +122,14 @@ export function NewEventForm({ initialType }: { initialType: T }) {
           </div>
           <div>
             <label className="label" htmlFor="wishlistDeadline">
-              Norus surašyti iki <span className="text-gray-400">(nebūtina)</span>
+              Norus surašyti iki <span className="text-muted/70">(nebūtina)</span>
             </label>
             <input id="wishlistDeadline" name="wishlistDeadline" type="date" className="input" defaultValue={v.wishlistDeadline} />
           </div>
         </div>
         <div>
           <label className="label" htmlFor="message">
-            Žinutė dalyviams <span className="text-gray-400">(nebūtina)</span>
+            Žinutė dalyviams <span className="text-muted/70">(nebūtina)</span>
           </label>
           <textarea
             id="message"
@@ -159,7 +159,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
             <input id="hostEmail" name="hostEmail" type="email" className="input" required defaultValue={v.hostEmail} />
           </div>
         </div>
-        <p className="text-xs text-gray-500">Į šį adresą atsiųsime valdymo nuorodą.</p>
+        <p className="text-xs text-muted">Į šį adresą atsiųsime valdymo nuorodą.</p>
 
         {birthday ? (
           <label className="flex items-center gap-2 text-sm">
@@ -197,7 +197,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
               <input id="celebrantEmail" name="celebrantEmail" type="email" className="input" defaultValue={v.celebrantEmail} />
             </div>
           </div>
-          <p className="text-xs text-gray-500">Jubiliatas gaus nuorodą surašyti savo norus.</p>
+          <p className="text-xs text-muted">Jubiliatas gaus nuorodą surašyti savo norus.</p>
         </section>
       ) : null}
 
@@ -205,8 +205,8 @@ export function NewEventForm({ initialType }: { initialType: T }) {
         <label className="font-semibold" htmlFor="people">
           {birthday ? "Svečiai" : "Kiti dalyviai"}
         </label>
-        <p className="text-sm text-gray-600">
-          Po vieną eilutėje: <code className="rounded bg-gray-100 px-1">Vardas, el.paštas</code>
+        <p className="text-sm text-muted">
+          Po vieną eilutėje: <code className="rounded bg-void/60/10 px-1">Vardas, el.paštas</code>
           {birthday ? "" : " · iš viso reikia bent 3 dalyvių"}
         </p>
         <textarea

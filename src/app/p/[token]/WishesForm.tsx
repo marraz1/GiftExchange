@@ -37,19 +37,19 @@ export function WishesForm({
       className="space-y-5">
       <input type="hidden" name="token" value={token} />
       {state?.error ? (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div role="alert" className="rounded-2xl border border-rose/40 bg-rose/10 px-4 py-3 text-sm text-pink-100">
           {state.error}
         </div>
       ) : null}
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted">
         Įrašykite iki {max} norų ar idėjų – daiktą, patirtį ar tiesiog kryptį (pvz. „gera knyga apie keliones“).
         {birthday ? " Svečiai matys šį sąrašą ir pasirinks, ką dovanoti." : " Juos matys tik tas, kuris jums dovanos."}
       </p>
       {Array.from({ length: max }, (_, i) => {
         const n = i + 1;
         return (
-          <fieldset key={n} className="space-y-2 rounded-xl border border-gray-200 p-3">
-            <legend className="px-1 text-sm font-semibold text-gray-700">{n} noras</legend>
+          <fieldset key={n} className="space-y-2 rounded-2xl border border-line bg-void/40 p-4">
+            <legend className="font-display px-1 text-xs font-bold text-muted">{n} noras</legend>
             <input
               name={`title_${n}`}
               className="input"
@@ -91,7 +91,7 @@ export function WishesForm({
         ) : null}
       </div>
       {!birthday ? (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted">
           Norus galite keisti, kol organizatorius neištraukė burtų. Burtų rezultatą gausite el. paštu.
         </p>
       ) : null}
