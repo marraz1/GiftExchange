@@ -1,0 +1,239 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { claimWish, saveWishes, unclaimWish } from "@/app/actions/participant";
+import { Flash } from "@/components/Flash";
+import { SubmitButton } from "@/components/SubmitButton";
+import type { Wish } from "@/lib/db";
+import { THEMES, formatDate, formatMoney, isPast, MAX_WISHES, safeUrl } from "@/lib/format";
+import { loadParticipantView } from "@/lib/queries";
+
+export const metadata: Metadata = { title: "Mano norai", robots: { index: false, follow: false } };
+
+type Props = {
+  params: Promise<{ token: string }>;
+  searchParams: Promise<{ m?: string; t?: string }>;
+};
+
+function WishView({ w }: { w: Pick<Wish, "title" | "url" | "note"> }) {
+  const url = safeUrl(w.url);
+  return (
+    <>
+      <span className="font-medium">{w.title}</span>
+      {url ? (
+        <>
+          {" "}
+          –{" "}
+          <a href={url} target="_blank" rel="noopener noreferrer nofollow" className="text-blue-700 underline">
+            nuoroda
+          </a>
+        </>
+      ) : null}
+      {w.note ? <span className="block text-sm text-gray-600">{w.note}</span> : null}
+    </>
+  );
+}
+
+export default async function ParticipantPage({ params, searchParams }: Props) {
+  const { token } = await params;
+  const sp = await searchParams;
+  const view = await loadParticipantView(token);
+  if (!view) notFound();
+  const { event, participant, own, receiver, celebrant } = view;
+  const theme = THEMES[event.type];
+  const past = isPast(event);
+  const money = formatMoney(event.budgetAmount, event.currency);
+  const birthday = event.type === "birthday";
+  const isGuest = birthday && participant.role === "member";
+  const max = MAX_WISHES[event.type];
+  const locked =
+    past || (!birthday && event.status === "drawn") || (birthday && Boolean(event.sharedAt));
+
+  return (
+    <div className="space-y-6">
+      <section className={`card border-2 ${theme.ring}`}>
+        <p className={`text-sm font-semibold ${theme.text}`}>
+          {theme.emoji} {event.title}
+        </p>
+        <h1 className="mt-1 text-3xl font-bold">Labas, {participant.name}!</h1>
+        <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          {money ? (
+            <div>
+              <dt className="text-gray-500">{birthday ? "Suma vienam" : "Dovanos suma"}</dt>
+              <dd className="font-semibold">{money}</dd>
+            </div>
+          ) : null}
+          <div>
+            <dt className="text-gray-500">Data</dt>
+            <dd className="font-semibold">{formatDate(event.exchangeDate)}</dd>
+          </div>
+          {event.wishlistDeadline ? (
+            <div>
+              <dt className="text-gray-500">Norai iki</dt>
+              <dd className="font-semibold">{formatDate(event.wishlistDeadline)}</dd>
+            </div>
+          ) : null}
+          <div>
+            <dt className="text-gray-500">Organizatorius</dt>
+            <dd className="font-semibold">{event.hostName}</dd>
+          </div>
+        </dl>
+        {event.message ? (
+          <p className="mt-4 whitespace-pre-wrap rounded-lg bg-gray-50 p-3 text-sm text-gray-700">{event.message}</p>
+        ) : null}
+      </section>
+
+      <Flash m={sp.m} t={sp.t} />
+
+      {receiver ? (
+        <section className={`card ${theme.soft} text-center`}>
+          <p className="text-sm text-gray-600">Jūs dovanojate</p>
+          <p className={`my-2 text-4xl font-extrabold ${theme.text}`}>{receiver.name}</p>
+          <p className="text-sm text-gray-600">🤫 Niekam nesakykite!</p>
+          <div className="mt-6 text-left">
+            <h2 className="mb-2 font-semibold">{receiver.name} norai:</h2>
+            {receiver.wishes.length ? (
+              <ol className="list-decimal space-y-2 pl-5">
+                {receiver.wishes.map((w) => (
+                  <li key={w.id}>
+                    <WishView w={w} />
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-sm text-gray-600">Norų nenurodė – teks sugalvoti patiems 🙂</p>
+            )}
+          </div>
+        </section>
+      ) : null}
+
+      {isGuest ? (
+        <section className="card">
+          {!event.sharedAt || !celebrant ? (
+            <p className="text-gray-600">Jubiliato norų sąrašas dar neparuoštas. Gausite laišką, kai jis bus paruoštas.</p>
+          ) : (
+            <>
+              <h2 className="mb-1 text-lg font-semibold">🎂 {celebrant.name} norai</h2>
+              <p className="mb-4 text-sm text-gray-600">
+                Pasirinkite, ką dovanosite – kiti svečiai matys, kad dovana užimta. {celebrant.name} to nematys.
+              </p>
+              <ul className="space-y-3">
+                {celebrant.wishes.map((w) => {
+                  const mine = w.claimedById === participant.id;
+                  const taken = w.claimedById && !mine;
+                  return (
+                    <li
+                      key={w.id}
+                      className={`flex flex-col gap-2 rounded-xl border p-3 sm:flex-row sm:items-center sm:justify-between ${
+                        mine ? "border-green-300 bg-green-50" : taken ? "border-gray-200 bg-gray-50 opacity-60" : "border-gray-200"
+                      }`}
+                    >
+                      <div className={taken ? "line-through" : ""}>
+                        <WishView w={w} />
+                      </div>
+                      {past ? null : mine ? (
+                        <form action={unclaimWish}>
+                          <input type="hidden" name="token" value={token} />
+                          <input type="hidden" name="wishId" value={w.id} />
+                          <SubmitButton className="btn-secondary">✓ Jūsų · atšaukti</SubmitButton>
+                        </form>
+                      ) : taken ? (
+                        <span className="text-sm text-gray-500">Jau pasirinkta</span>
+                      ) : (
+                        <form action={claimWish}>
+                          <input type="hidden" name="token" value={token} />
+                          <input type="hidden" name="wishId" value={w.id} />
+                          <SubmitButton className={`btn ${theme.btn}`}>Dovanosiu aš</SubmitButton>
+                        </form>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </section>
+      ) : (
+        <section className="card">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold">Mano norai</h2>
+            {participant.completedAt ? (
+              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">✅ Baigta</span>
+            ) : null}
+          </div>
+          {locked ? (
+            own.length ? (
+              <ol className="list-decimal space-y-2 pl-5">
+                {own.map((w) => (
+                  <li key={w.id}>
+                    <WishView w={w} />
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-sm text-gray-600">Norų nenurodėte.</p>
+            )
+          ) : (
+            <form action={saveWishes} className="space-y-5">
+              <input type="hidden" name="token" value={token} />
+              <p className="text-sm text-gray-600">
+                Įrašykite iki {max} norų ar idėjų – daiktą, patirtį ar tiesiog kryptį (pvz. „gera knyga apie keliones“).
+                {birthday ? " Svečiai matys šį sąrašą ir pasirinks, ką dovanoti." : " Juos matys tik tas, kuris jums dovanos."}
+              </p>
+              {Array.from({ length: max }, (_, i) => {
+                const w = own[i];
+                const n = i + 1;
+                return (
+                  <fieldset key={n} className="space-y-2 rounded-xl border border-gray-200 p-3">
+                    <legend className="px-1 text-sm font-semibold text-gray-700">{n} noras</legend>
+                    <input
+                      name={`title_${n}`}
+                      className="input"
+                      placeholder="Ką norėtumėte gauti?"
+                      maxLength={200}
+                      defaultValue={w?.title ?? ""}
+                      aria-label={`${n} noras`}
+                    />
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <input
+                        name={`url_${n}`}
+                        type="url"
+                        className="input text-sm"
+                        placeholder="Nuoroda (nebūtina)"
+                        maxLength={1000}
+                        defaultValue={w?.url ?? ""}
+                        aria-label={`${n} noro nuoroda`}
+                      />
+                      <input
+                        name={`note_${n}`}
+                        className="input text-sm"
+                        placeholder="Dydis, spalva… (nebūtina)"
+                        maxLength={300}
+                        defaultValue={w?.note ?? ""}
+                        aria-label={`${n} noro komentaras`}
+                      />
+                    </div>
+                  </fieldset>
+                );
+              })}
+              <div className="flex flex-wrap gap-2">
+                <SubmitButton name="intent" value="complete" className={`btn ${theme.btn} px-6 py-3 text-base`} pendingText="Saugoma…">
+                  ✅ {participant.completedAt ? "Išsaugoti" : "Baigiau"}
+                </SubmitButton>
+                {!participant.completedAt ? (
+                  <SubmitButton name="intent" value="save" className="btn-secondary" pendingText="Saugoma…">
+                    Išsaugoti juodraštį
+                  </SubmitButton>
+                ) : null}
+              </div>
+              {!birthday ? (
+                <p className="text-xs text-gray-500">
+                  Norus galite keisti, kol organizatorius neištraukė burtų. Burtų rezultatą gausite el. paštu.
+                </p>
+              ) : null}
+            </form>
+          )}
+        </section>
+      )}
+    </div>
+  );
+}
