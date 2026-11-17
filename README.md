@@ -17,7 +17,7 @@ Reikalavimai: [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)
 | Svetainė | Next.js 16 (App Router, Server Actions), Tailwind 4 | — |
 | Hostingas + cron | Vercel | Hobby (nemokamas) |
 | Duomenų bazė | Neon Postgres + Drizzle ORM | Free |
-| El. laiškai | Resend (atsarginis variantas – Gmail SMTP) | Free: 3000 laiškų/mėn., 100/d. |
+| El. laiškai | Gmail SMTP per Nodemailer | nemokamas (~500 laiškų/d.) |
 
 ## Aplinkos kintamieji
 
@@ -27,22 +27,18 @@ Reikalavimai: [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)
 |---|---|
 | `DATABASE_URL` | Neon prisijungimo eilutė |
 | `TOKEN_SECRET` | Slaptas raktas nuorodų pasirašymui (`openssl rand -base64 32`). **Nekeiskite** – pasikeitus visos nuorodos nustos veikti |
-| `RESEND_API_KEY` | Resend API raktas (resend.com → API Keys) |
-| `EMAIL_FROM` | Siuntėjas, pvz. `Dovanų keitimasis <dovanos@jusu-domenas.lt>`. Reikia patvirtinto domeno |
+| `GMAIL_USER` | Gmail adresas, iš kurio siunčiami laiškai |
+| `GMAIL_APP_PASSWORD` | Gmail „App password“ (ne įprastas slaptažodis) |
 | `APP_URL` | Svetainės adresas, pvz. `https://gift-exchange.vercel.app` (Vercel'yje neprivalomas) |
 | `CRON_SECRET` | Apsaugo `/api/cron/cleanup` (Vercel jį perduoda automatiškai) |
-| `GMAIL_USER`, `GMAIL_APP_PASSWORD` | Nebūtina: Gmail SMTP vietoje Resend, jei `RESEND_API_KEY` nenustatytas |
 
-### Resend
+### Gmail App password
 
-1. Užsiregistruokite <https://resend.com> (nemokamai) ir sukurkite API raktą: **API Keys → Create API Key** (teisė „Sending access“).
-2. Raktą įrašykite į `RESEND_API_KEY`.
-3. **Svarbu:** kol nepatvirtintas domenas, Resend leidžia siųsti laiškus **tik į jūsų Resend paskyros el. paštą**
-   (siuntėjas `onboarding@resend.dev`). Tikriems dalyviams reikia domeno:
-   **Domains → Add Domain**, įrašykite Resend pateiktus DNS įrašus pas domeno registratorių, palaukite patvirtinimo
-   ir nustatykite `EMAIL_FROM`, pvz. `Dovanų keitimasis <dovanos@jusu-domenas.lt>`.
+1. Google paskyroje įjunkite **2-Step Verification**: <https://myaccount.google.com/security>.
+2. Atidarykite <https://myaccount.google.com/apppasswords>, sukurkite slaptažodį (pvz. „GiftExchange“).
+3. 16 simbolių slaptažodį įrašykite į `GMAIL_APP_PASSWORD`, o savo Gmail adresą – į `GMAIL_USER`.
 
-Be jokio el. pašto rakto vietinėje aplinkoje laiškai tik išvedami į konsolę.
+Be šių kintamųjų vietinėje aplinkoje laiškai tik išvedami į konsolę.
 
 ## Vietinis paleidimas
 
@@ -55,7 +51,7 @@ npm run dev
 
 ## Komandos
 
-- `npm test` – unit testai (burtų algoritmas, nuorodų parašai, Resend siuntimas)
+- `npm test` – unit testai (burtų algoritmas, nuorodų parašai)
 - `npm run typecheck` – TypeScript patikra
 - `npm run db:generate` – nauja migracija pakeitus `src/lib/db/schema.ts`
 
@@ -67,7 +63,7 @@ src/app/actions/         Server Actions (kūrimas, valdymas, dalyvio veiksmai)
 src/app/api/cron/cleanup kasdien ištrina progas praėjus 30 d. po datos
 src/lib/draw.ts          burtų algoritmas (vienas atsitiktinis ciklas – niekas negauna savęs)
 src/lib/tokens.ts        HMAC pasirašytos nuorodos
-src/lib/email/           Resend (arba Gmail SMTP) siuntimas ir laiškų šablonai
+src/lib/email/           Gmail SMTP siuntimas ir laiškų šablonai
 src/lib/db/schema.ts     duomenų modelis
 drizzle/                 SQL migracijos
 ```
