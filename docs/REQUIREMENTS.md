@@ -1,5 +1,12 @@
 # Gift Exchange – reikalavimai
 
+> **Priimti sprendimai (2026-11-16)** – jie keičia žemiau esančius punktus:
+> - Viskas tik nemokamuose planuose (Vercel Hobby, Neon Free).
+> - El. laiškai siunčiami per **Gmail SMTP** (Nodemailer + App password), ne per Resend – Resend be nuosavo (mokamo) domeno leidžia siųsti tik sau.
+> - **Gimtadienis** veikia kitaip: burtų nėra. Jubiliatas surašo iki 6 norų, organizatorius išsiunčia sąrašą svečiams, svečiai rezervuoja dovanas (kiti mato, kad užimta; jubiliatas nemato).
+> - Suma – rekomenduojama vienos dovanos (gimtadieniui – vieno svečio) suma.
+> - Nuorodos – HMAC pasirašytos (`<id>.<parašas>`), todėl hostas gali bet kada nukopijuoti dalyvio nuorodą; ištrynus dalyvį nuoroda nebegalioja.
+
 ## 1. Tikslas
 Svetainė dovanų keitimuisi („Secret Santa“ principu) organizuoti: organizatorius (hostas) sukuria progą, įveda dalyvius, kiekvienas per asmeninę nuorodą įrašo 3 norus, hostas paspaudžia **Draw**, ir kiekvienas el. paštu gauna, kam dovanoja ir ką tas žmogus nori. Niekas negauna savęs.
 
