@@ -64,7 +64,7 @@ export default async function AdminPage({ params, searchParams }: Props) {
     <div className="space-y-6" style={{ "--accent": theme.stroke } as React.CSSProperties}>
       <Flash m={sp.m} t={sp.t} />
       {!emailConfigured() && process.env.VERCEL ? (
-        <Flash t="err" m="El. laiškų siuntimas nesukonfigūruotas (GMAIL_USER / GMAIL_APP_PASSWORD). Kol kas nukopijuokite nuorodas ir išsiųskite patys." />
+        <Flash t="err" m="El. laiškų siuntimas nesukonfigūruotas (RESEND_API_KEY). Kol kas nukopijuokite nuorodas ir išsiųskite patys." />
       ) : null}
 
       {sp.created ? (

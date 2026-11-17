@@ -2,7 +2,7 @@
 
 > **Priimti sprendimai (2026-11-16)** – jie keičia žemiau esančius punktus:
 > - Viskas tik nemokamuose planuose (Vercel Hobby, Neon Free).
-> - El. laiškai siunčiami per **Gmail SMTP** (Nodemailer + App password), ne per Resend – Resend be nuosavo (mokamo) domeno leidžia siųsti tik sau.
+> - El. laiškai siunčiami per **Resend** (2026-11-17 pakeista iš Gmail SMTP, kuris liko atsarginiu variantu). Tikriems dalyviams Resend reikia patvirtinto domeno – be jo laiškai siunčiami tik Resend paskyros savininkui.
 > - **Gimtadienis** veikia kitaip: burtų nėra. Jubiliatas surašo iki 6 norų, organizatorius išsiunčia sąrašą svečiams, svečiai rezervuoja dovanas (kiti mato, kad užimta; jubiliatas nemato).
 > - Suma – rekomenduojama vienos dovanos (gimtadieniui – vieno svečio) suma.
 > - Nuorodos – HMAC pasirašytos (`<id>.<parašas>`), todėl hostas gali bet kada nukopijuoti dalyvio nuorodą; ištrynus dalyvį nuoroda nebegalioja.
