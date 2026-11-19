@@ -3,9 +3,9 @@
 Nemokama svetainė slaptam dovanų keitimuisi: Kalėdoms, gimtadieniams ir kitoms progoms.
 
 - **Kalėdos / Kita proga** – organizatorius sukuria progą ir įveda dalyvius, kiekvienas per asmeninę nuorodą
-  surašo iki 3 norų ir pažymi „Baigiau“, organizatorius traukia burtus, kiekvienas el. paštu gauna, kam dovanoja
+  surašo iki 10 norų ir pažymi „Baigiau“, organizatorius traukia burtus, kiekvienas el. paštu gauna, kam dovanoja
   ir ką tas žmogus nori. Savęs niekas negauna.
-- **Gimtadienis** – jubiliatas surašo iki 6 norų, svečiai gauna sąrašą ir rezervuoja, ką dovanos (jubiliatas
+- **Gimtadienis** – jubiliatas surašo iki 10 norų, svečiai gauna sąrašą ir rezervuoja, ką dovanos (jubiliatas
   nemato, kas ką pasirinko).
 
 Reikalavimai: [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)

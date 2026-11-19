@@ -3,7 +3,7 @@
 > **Priimti sprendimai (2026-11-16)** – jie keičia žemiau esančius punktus:
 > - Viskas tik nemokamuose planuose (Vercel Hobby, Neon Free).
 > - El. laiškai siunčiami per **Gmail SMTP** (Nodemailer + App password), ne per Resend – Resend be nuosavo (mokamo) domeno leidžia siųsti tik sau.
-> - **Gimtadienis** veikia kitaip: burtų nėra. Jubiliatas surašo iki 6 norų, organizatorius išsiunčia sąrašą svečiams, svečiai rezervuoja dovanas (kiti mato, kad užimta; jubiliatas nemato).
+> - **Gimtadienis** veikia kitaip: burtų nėra. Jubiliatas surašo iki 10 norų, organizatorius išsiunčia sąrašą svečiams, svečiai rezervuoja dovanas (kiti mato, kad užimta; jubiliatas nemato).
 > - Suma – rekomenduojama vienos dovanos (gimtadieniui – vieno svečio) suma.
 > - Nuorodos – HMAC pasirašytos (`<id>.<parašas>`), todėl hostas gali bet kada nukopijuoti dalyvio nuorodą; ištrynus dalyvį nuoroda nebegalioja.
 
@@ -52,7 +52,7 @@ Aplinkos kintamieji: `DATABASE_URL`, `RESEND_API_KEY`, `EMAIL_FROM`, `APP_URL`, 
 
 ### 4.4 Dalyvio puslapis
 - F13. Atidarius nuorodą rodoma: „Sveikas, {Vardas}!“, progos info, suma, data, terminas.
-- F14. **3 norų laukai** (idėja ar daiktas): pavadinimas (privalomas bent 1, iki 200 simb.), neprivaloma nuoroda (URL) ir komentaras. Rekomenduojama užpildyti visus 3, bet leidžiama bent 1.
+- F14. **Iki 10 norų** (idėja ar daiktas; 2026-11-19 padidinta nuo 3): pavadinimas (privalomas bent 1, iki 200 simb.), neprivaloma nuoroda (URL) ir komentaras. Iš pradžių rodomi 3 laukai, mygtuku „Pridėti dar vieną norą“ – daugiau.
 - F15. Mygtukas **„Baigiau“** – išsaugo ir pažymi dalyvį kaip užbaigusį. Iki Draw galima grįžti ir redaguoti (statusas lieka „baigė“, bet atnaujinami norai).
 - F16. Po Draw dalyvio puslapis rodo, kam jis dovanoja ir to žmogaus norus (dubliuoja el. laišką, jei šis dingo).
 - F17. Neteisingas / panaikintas tokenas → 404 puslapis be informacijos nutekėjimo.

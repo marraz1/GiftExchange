@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { saveWishes, type WishesState } from "@/app/actions/participant";
 import { SubmitButton } from "@/components/SubmitButton";
 
@@ -25,6 +25,8 @@ export function WishesForm({
   const v = state?.values;
   const val = (field: "title" | "url" | "note", n: number) =>
     v ? (v[`${field}_${n}`] ?? "") : (wishes[n - 1]?.[field] ?? "");
+  // Show the filled wishes plus one empty slot (at least 3); more can be added up to `max`.
+  const [shown, setShown] = useState(() => Math.min(max, Math.max(3, wishes.length + 1)));
 
   return (
     <form
@@ -45,7 +47,7 @@ export function WishesForm({
         Įrašykite iki {max} norų ar idėjų – daiktą, patirtį ar tiesiog kryptį (pvz. „gera knyga apie keliones“).
         {birthday ? " Svečiai matys šį sąrašą ir pasirinks, ką dovanoti." : " Juos matys tik tas, kuris jums dovanos."}
       </p>
-      {Array.from({ length: max }, (_, i) => {
+      {Array.from({ length: shown }, (_, i) => {
         const n = i + 1;
         return (
           <fieldset key={n} className="space-y-2 rounded-2xl border border-line bg-void/40 p-4">
@@ -80,6 +82,11 @@ export function WishesForm({
           </fieldset>
         );
       })}
+      {shown < max ? (
+        <button type="button" className="btn-secondary w-full border-dashed py-3" onClick={() => setShown((n) => Math.min(max, n + 1))}>
+          + Pridėti dar vieną norą ({shown}/{max})
+        </button>
+      ) : null}
       <div className="flex flex-wrap gap-2">
         <SubmitButton busy={busy} name="intent" value="complete" className={`btn ${btnClass} px-6 py-3 text-base`} pendingText="Saugoma…">
           ✅ {completed ? "Išsaugoti" : "Baigiau"}

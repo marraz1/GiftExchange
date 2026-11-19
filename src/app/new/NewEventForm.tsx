@@ -73,7 +73,7 @@ export function NewEventForm({ initialType }: { initialType: T }) {
         <p className="mt-3 text-sm text-muted">
           {birthday
             ? "Jubiliatas surašo norus, svečiai rezervuoja, ką dovanos. Burtų nėra."
-            : "Kiekvienas surašo iki 3 norų, tada traukiami burtai – kiekvienas dovanoja vienam žmogui."}
+            : "Kiekvienas surašo iki 10 norų, tada traukiami burtai – kiekvienas dovanoja vienam žmogui."}
         </p>
       </fieldset>
 

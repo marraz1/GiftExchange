@@ -39,7 +39,16 @@ export const THEMES: Record<
   },
 };
 
-export const MAX_WISHES: Record<EventType, number> = { christmas: 3, custom: 3, birthday: 6 };
+export const MAX_WISHES: Record<EventType, number> = { christmas: 10, custom: 10, birthday: 10 };
+
+/** Lithuanian plural of "noras": 1 noras, 2 norai, 10 norų, 21 noras… */
+export function norai(n: number): string {
+  const d = n % 10;
+  const t = n % 100;
+  if (d === 1 && t !== 11) return `${n} noras`;
+  if (d >= 2 && d <= 9 && (t < 12 || t > 19)) return `${n} norai`;
+  return `${n} norų`;
+}
 
 export function formatMoney(amount: string | null, currency: string): string | null {
   if (amount == null) return null;
