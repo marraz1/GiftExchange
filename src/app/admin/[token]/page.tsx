@@ -19,7 +19,7 @@ import { Step } from "@/components/Step";
 import { SubmitButton } from "@/components/SubmitButton";
 import { emailConfigured } from "@/lib/email/send";
 import { MIN_DRAW_PARTICIPANTS } from "@/lib/draw";
-import { THEMES, formatDate, formatMoney, isPast, MAX_WISHES } from "@/lib/format";
+import { THEMES, formatDate, formatMoney, isPast, norai } from "@/lib/format";
 import { adminLink, loadAdminView, participantLink } from "@/lib/queries";
 
 export const metadata: Metadata = { title: "Valdymas", robots: { index: false, follow: false } };
@@ -122,7 +122,7 @@ export default async function AdminPage({ params, searchParams }: Props) {
           <ol>
             <Step n={1} title="Jubiliatas surašo norus" state={celebrant?.completedAt ? "done" : "active"}>
               {celebrant?.completedAt ? (
-                <p>{celebrant.name} surašė {celebrant.wishCount} norus.</p>
+                <p>{celebrant.name} surašė: {norai(celebrant.wishCount)}.</p>
               ) : celebrant?.invitedAt ? (
                 <>
                   <p>Kvietimas išsiųstas. Laukiame, kol {celebrant.name} surašys norus.</p>
@@ -251,9 +251,9 @@ export default async function AdminPage({ params, searchParams }: Props) {
                   ? "Gavo sąrašą"
                   : "Laukia sąrašo"
               : p.completedAt
-                ? `✅ Baigė (${p.wishCount}/${MAX_WISHES[event.type]})`
+                ? `✅ Baigė (${norai(p.wishCount)})`
                 : p.invitedAt
-                  ? `✏️ Pildo${p.wishCount ? ` (${p.wishCount})` : ""}`
+                  ? `✏️ Pildo${p.wishCount ? ` (${norai(p.wishCount)})` : ""}`
                   : "Kvietimas neišsiųstas";
             const canSend = !birthday || p.role === "celebrant" || Boolean(event.sharedAt);
             return (

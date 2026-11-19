@@ -3,7 +3,7 @@ import { Flash } from "@/components/Flash";
 
 const steps = [
   ["Sukurkite progą", "Suma, data ir dalyvių sąrašas. Registruotis nereikia."],
-  ["Visi surašo norus", "Kiekvienas gauna asmeninę nuorodą ir įrašo iki 3 norų."],
+  ["Visi surašo norus", "Kiekvienas gauna asmeninę nuorodą ir įrašo iki 10 norų."],
   ["Ištraukite burtus", "Kiekvienas el. paštu sužino, kam dovanoja ir ką tas žmogus nori."],
 ];
 

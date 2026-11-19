@@ -29,3 +29,13 @@ describe("drawCycle", () => {
     expect(seen.size).toBeGreaterThan(5);
   });
 });
+
+import { norai } from "./format";
+
+describe("norai", () => {
+  it("uses Lithuanian plural forms", () => {
+    expect([1, 2, 5, 9, 10, 11, 12, 21, 22].map(norai)).toEqual([
+      "1 noras", "2 norai", "5 norai", "9 norai", "10 norų", "11 norų", "12 norų", "21 noras", "22 norai",
+    ]);
+  });
+});
