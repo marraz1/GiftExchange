@@ -1,7 +1,7 @@
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { assignments, db, events, participants, type Event, type Participant } from "./db";
 import { MAX_WISHES } from "./format";
-import { adminLink, participantLink, participantsOf, wishesOf } from "./queries";
+import { adminLink, participantLink, participantsOf, recentEmails, wishesOf } from "./queries";
 import { sendMail } from "./email/send";
 import {
   allDoneMail,
@@ -10,6 +10,7 @@ import {
   guestWishlistMail,
   inviteMail,
   reminderMail,
+  wishesUpdatedMail,
 } from "./email/templates";
 
 export type BulkResult = { sent: number; failed: number };
@@ -122,4 +123,26 @@ export async function maybeNotifyAllDone(eventId: string) {
 
 export async function touchEvent(eventId: string) {
   await db().update(events).set({ updatedAt: sql`now()` }).where(eq(events.id, eventId));
+}
+
+/**
+ * After the draw (when the host allows edits): tell the person who gives to `receiverId`
+ * that the wishes changed. At most one such email per giver per hour.
+ */
+export async function notifyGiverOfUpdate(event: Event, receiverId: string) {
+  const [row] = await db()
+    .select({ giver: participants })
+    .from(assignments)
+    .innerJoin(participants, eq(participants.id, assignments.giverId))
+    .where(and(eq(assignments.eventId, event.id), eq(assignments.receiverId, receiverId)));
+  if (!row) return;
+  if ((await recentEmails({ participantId: row.giver.id, kind: "wishes_updated" })) > 0) return;
+  const [receiver] = await db().select().from(participants).where(eq(participants.id, receiverId));
+  if (!receiver) return;
+  const w = await wishesOf(receiverId);
+  await sendMail(wishesUpdatedMail(event, row.giver, receiver.name, w, participantLink(row.giver.id)), {
+    kind: "wishes_updated",
+    eventId: event.id,
+    participantId: row.giver.id,
+  });
 }

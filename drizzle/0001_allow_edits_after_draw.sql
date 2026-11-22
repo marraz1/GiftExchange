@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "allow_edits_after_draw" boolean DEFAULT false NOT NULL;

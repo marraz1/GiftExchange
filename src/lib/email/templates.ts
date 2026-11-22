@@ -203,6 +203,28 @@ export function drawResultMail(
   };
 }
 
+export function wishesUpdatedMail(
+  ev: Ev,
+  giver: Pick<Participant, "name" | "email">,
+  receiverName: string,
+  wishes: WishLike[],
+  link: string,
+): Mail {
+  const w = wishList(wishes);
+  return {
+    to: giver.email,
+    subject: `${THEMES[ev.type].emoji} ${receiverName} atnaujino norų sąrašą`,
+    html: layout(
+      ev,
+      `Labas, ${e(giver.name)}!`,
+      `<p><strong>${e(receiverName)}</strong>, kuriam dovanojate, atnaujino savo norus. Dabartinis sąrašas:</p>${w.html}
+       <p style="color:#6b7280">Naujausią sąrašą visada rasite svetainėje.</p>`,
+      { label: "Peržiūrėti svetainėje", href: link },
+    ),
+    text: `Labas, ${giver.name}!\n\n${receiverName} atnaujino norus:\n${w.text}\n\n${link}`,
+  };
+}
+
 export function drawResetMail(ev: Ev, p: Pick<Participant, "name" | "email">): Mail {
   return {
     to: p.email,
