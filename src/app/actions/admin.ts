@@ -192,3 +192,19 @@ export async function deleteEvent(fd: FormData) {
   await db().delete(events).where(eq(events.id, event.id));
   redirect(`/?${new URLSearchParams({ m: "Proga ir visi jos duomenys ištrinti." })}`);
 }
+
+export async function setEditsAfterDraw(fd: FormData) {
+  const { token, event } = await requireEvent(fd);
+  if (event.type === "birthday") back(token, "Gimtadienio progoje burtų nėra.", "err");
+  const allow = str(fd, "value") === "1";
+  await db()
+    .update(events)
+    .set({ allowEditsAfterDraw: allow, updatedAt: new Date() })
+    .where(eq(events.id, event.id));
+  back(
+    token,
+    allow
+      ? "Dalyviai gali keisti norus ir po burtų. Dovanotojas gaus laišką apie pakeitimus."
+      : "Norų keitimas po burtų išjungtas.",
+  );
+}

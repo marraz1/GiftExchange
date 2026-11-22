@@ -9,6 +9,7 @@ import {
   resendOne,
   resetDraw,
   sendInvites,
+  setEditsAfterDraw,
   shareWishlist,
   updateEvent,
 } from "@/app/actions/admin";
@@ -195,6 +196,37 @@ export default async function AdminPage({ params, searchParams }: Props) {
               {drawn ? (
                 <>
                   <p>Ištraukta {drawnAt}. Kas kam dovanoja, žino tik patys dalyviai.</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-void/50 p-4">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-ink">Norų keitimas po burtų</p>
+                      <p className="mt-0.5 text-xs">
+                        {event.allowEditsAfterDraw
+                          ? "Įjungta: dalyviai gali atnaujinti norus, dovanotojas gauna laišką apie pakeitimus."
+                          : "Išjungta: norų sąrašai užrakinti."}
+                      </p>
+                    </div>
+                    <form action={setEditsAfterDraw}>
+                      <Hidden token={token} />
+                      <input type="hidden" name="value" value={event.allowEditsAfterDraw ? "0" : "1"} />
+                      <SubmitButton
+                        role="switch"
+                        aria-checked={event.allowEditsAfterDraw}
+                        aria-label="Leisti keisti norus po burtų"
+                        className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border transition ${
+                          event.allowEditsAfterDraw
+                            ? "border-[var(--accent)] bg-[var(--accent)]/30"
+                            : "border-line bg-white/5"
+                        }`}
+                        pendingText=""
+                      >
+                        <span
+                          className={`absolute h-6 w-6 rounded-full transition-all ${
+                            event.allowEditsAfterDraw ? "left-7 bg-[var(--accent)]" : "left-1 bg-muted"
+                          }`}
+                        />
+                      </SubmitButton>
+                    </form>
+                  </div>
                   <form action={resetDraw}>
                     <Hidden token={token} />
                     <SubmitButton

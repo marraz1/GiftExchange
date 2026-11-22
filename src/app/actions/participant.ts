@@ -4,7 +4,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { db, participants, wishes } from "@/lib/db";
 import { isPast, MAX_WISHES } from "@/lib/format";
-import { maybeNotifyAllDone } from "@/lib/mailers";
+import { maybeNotifyAllDone, notifyGiverOfUpdate } from "@/lib/mailers";
 import { getParticipantByToken } from "@/lib/queries";
 import { str, wishSchema } from "@/lib/validation";
 
@@ -31,7 +31,8 @@ export async function saveWishes(_prev: WishesState, fd: FormData): Promise<Wish
 
   if (event.type === "birthday" && participant.role !== "celebrant")
     back(token, "Svečiai norų nerašo – pasirinkite dovaną iš sąrašo.", "err");
-  if (event.type !== "birthday" && event.status === "drawn")
+  const afterDraw = event.type !== "birthday" && event.status === "drawn";
+  if (afterDraw && !event.allowEditsAfterDraw)
     back(token, "Burtai jau ištraukti – norų keisti nebegalima.", "err");
   if (event.type === "birthday" && event.sharedAt)
     back(token, "Norų sąrašas jau išsiųstas svečiams – keisti nebegalima.", "err");
@@ -65,6 +66,10 @@ export async function saveWishes(_prev: WishesState, fd: FormData): Promise<Wish
       await tx.update(participants).set({ completedAt: null }).where(eq(participants.id, participant.id));
   });
 
+  if (afterDraw) {
+    await notifyGiverOfUpdate(event, participant.id);
+    back(token, "Norai atnaujinti. Jūsų dovanotojas matys pakeitimus. 🎁");
+  }
   if (complete) await maybeNotifyAllDone(event.id);
   back(token, complete ? "Ačiū! Jūsų norai išsaugoti ir pažymėta, kad baigėte. 🎉" : "Išsaugota.");
 }

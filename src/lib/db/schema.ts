@@ -39,6 +39,8 @@ export const events = pgTable(
     /** Birthday: when the celebrant's wishlist was shared with guests. */
     sharedAt: timestamp("shared_at", { withTimezone: true }),
     allDoneNotifiedAt: timestamp("all_done_notified_at", { withTimezone: true }),
+    /** Christmas/custom: participants may keep editing wishes after the draw. */
+    allowEditsAfterDraw: boolean("allow_edits_after_draw").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

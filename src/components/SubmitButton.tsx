@@ -25,7 +25,7 @@ export function SubmitButton({ children, pendingText, confirmText, className, on
       }}
       {...rest}
     >
-      {pending && mine ? (pendingText ?? "Palaukite…") : children}
+      {pending && mine && pendingText !== "" ? (pendingText ?? "Palaukite…") : children}
     </button>
   );
 }

@@ -46,8 +46,9 @@ export default async function ParticipantPage({ params, searchParams }: Props) {
   const birthday = event.type === "birthday";
   const isGuest = birthday && participant.role === "member";
   const max = MAX_WISHES[event.type];
+  const editAfterDraw = !birthday && event.status === "drawn" && event.allowEditsAfterDraw;
   const locked =
-    past || (!birthday && event.status === "drawn") || (birthday && Boolean(event.sharedAt));
+    past || (!birthday && event.status === "drawn" && !editAfterDraw) || (birthday && Boolean(event.sharedAt));
 
   return (
     <div className="space-y-6">
@@ -168,6 +169,12 @@ export default async function ParticipantPage({ params, searchParams }: Props) {
               <span className="rounded-full bg-mint/15 px-3 py-1 text-xs font-semibold text-mint">✅ Baigta</span>
             ) : null}
           </div>
+          {editAfterDraw && !locked ? (
+            <p className="mb-4 rounded-2xl border border-line bg-void/50 px-4 py-3 text-sm text-muted">
+              Burtai jau ištraukti, bet organizatorius leido atnaujinti norus. Jūsų dovanotojas matys pakeitimus ir gaus
+              apie juos laišką.
+            </p>
+          ) : null}
           {locked ? (
             own.length ? (
               <ol className="list-decimal space-y-2 pl-5">

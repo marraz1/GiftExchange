@@ -71,6 +71,7 @@ Aplinkos kintamieji: `DATABASE_URL`, `RESEND_API_KEY`, `EMAIL_FROM`, `APP_URL`, 
 - F26. Po Draw kiekvienam dalyviui siunčiamas laiškas: „Tu dovanoji **{Vardas}**“, jo 3 norai, suma, keitimosi data.
 - F27. Hostas mato laiškų siuntimo statusą ir gali pakartoti nepavykusį (tas pats rezultatas, ne naujas draw).
 - F28. „Perdaryti draw“ (reset) – tik su aiškiu įspėjimu; visiems siunčiamas naujas laiškas „ankstesnis rezultatas negalioja“.
+- F28a. (2026-11-22) Hosto skydelyje po burtų yra jungiklis **„Norų keitimas po burtų“** (numatyta – išjungta). Įjungus dalyviai gali atnaujinti norus; jų dovanotojas mato naujausią sąrašą svetainėje ir gauna laišką „X atnaujino norų sąrašą“ (ne dažniau kaip kartą per valandą). Gimtadienio progai netaikoma.
 
 ### 4.7 El. laiškai (Resend)
 | Laiškas | Gavėjas | Kada |
